@@ -1,0 +1,143 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Instacart CS 527</title>
+<link href='style.css' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<script>
+	function openDiagram() {
+  		window.open("ERD.html");
+	}
+	function getData(inputQuery) {
+         if (inputQuery == "") {
+             alert("Please enter valid SQL Statement");
+             return;
+         } else { 
+			 if(document.getElementById("mysql").checked==true)
+			 {
+                 xmlhttp = new XMLHttpRequest();
+                 xmlhttp.onreadystatechange = function() {
+                 if (this.readyState == 4 && this.status == 200) {
+                     
+                     const records = this.responseText;
+					 const recordsArray=JSON.parse(records)
+					 if(recordsArray !== "Error")
+					 {
+					 var recordsLength=recordsArray.length
+					 var keys=Object.keys(recordsArray[0]); 
+					 var i=0
+					 var row=0
+					 var Table = document.getElementById("tables");
+                     Table.innerHTML = "";
+                     text='<table>'
+					 text+='<tr>'
+					 while(i < keys.length)
+					 {
+						text+='<th>' 
+						text+=keys[i]
+						text+='</th>'
+						i++
+					 }
+					 while(row < recordsLength)
+					 {
+						text+='<tr>'
+						for (var column in recordsArray[row]) {
+						text+='<td>'
+						text+=recordsArray[row][column]
+						text+='</td>'    
+						}
+						text+='</tr>'	  
+						row++
+					 }
+					 text+='</table>'
+					 document.getElementById("tables").innerHTML+=text
+					 }
+					 else{
+						 alert("SQL Syntax Error");
+					 }
+                 }
+             };
+             xmlhttp.open("GET","instacart_sql.php?query="+inputQuery,true);
+             xmlhttp.send();
+         }
+		 else if(document.getElementById("redshift").checked==true)
+		 {
+                 xmlhttp = new XMLHttpRequest();
+                 xmlhttp.onreadystatechange = function() {
+                 if (this.readyState == 4 && this.status == 200) {
+                     const records = this.responseText;
+					 var minSize=records.substring(records.length-6)
+					 if(minSize !== "Error\""){
+					 const recordArray=JSON.parse(records)
+					 var recordsLen=recordArray.length
+					 var keys=Object.keys(recordArray[0]); 
+					 var i=0
+					 var row=0
+					 var Table = document.getElementById("tables");
+                     Table.innerHTML = "";
+					 var text = ''
+                     text='<table>'
+					 text+='<tr>'
+					 while(i < keys.length)
+					 {
+						text+='<th>' 
+						text+=keys[i]
+						text+='</th>'
+						i++
+					 }
+					 while(row < recordsLen)
+					 {
+						text+='<tr>'
+						for (var column in recordArray[row]) {
+						text+='<td>'
+						text+=recordArray[row][column]
+						text+='</td>'
+						}	  
+						text+='</tr>'						  
+						row++
+					 }
+					 text+='</table>'
+					 document.getElementById("tables").innerHTML+=text
+                 }
+				 else{
+					alert("SQL Syntax Error");
+				 }
+				}
+             };
+             xmlhttp.open("GET","instacart_red.php?query="+inputQuery,true);
+             xmlhttp.send();
+		 }
+		 else{
+			alert("Please select database option");
+		}
+		 }		
+        }
+        history.replaceState({}, null, "/index.html");
+</script>
+
+<div class="form-style-10">
+<h1>Instacart CS 527</h1>
+
+    <div class="section"><span>1.</span>Enter your Query:$</div>
+    <div class="inner-wrap">
+        <label>Query:$<textarea id="sql_query" name="query" rows = "10" cols = "200"></textarea></label>
+    </div>
+    <div class="section"><span>2.</span>Select Database:$</div>
+    <div class="inner-wrap">
+        <label>MySQL<input type="radio" id="mysql" name="db" required/></label>
+        <label>Redshift<input type="radio" id="redshift" name="db" /></label>
+    </div>
+
+    <div class="button-section">
+	<input type="submit" onclick=getData(sql_query.value) value="Run Query" style="margin-left:0px" />
+	<input type="button"  value="View ER Diagram" onclick=openDiagram() style="margin-left:385px"/>
+	
+	</div>
+
+</div>
+<div id="tables"> </div>
+
+</body>
+</html>
+

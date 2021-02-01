@@ -1,0 +1,6 @@
+mongoimport --jsonArray --db instacart --collection departments --file C:\Instacart_JSON\departments.json
+
+mongoimport --jsonArray --db instacart --collection orders --file C:\Instacart_JSON\orders.json
+mongoimport --jsonArray --db instacart --collection order_products --file C:\Instacart_JSON\order_products.json
+mongoimport --jsonArray --db instacart --collection products --file C:\Instacart_JSON\products.json
+mongoimport --jsonArray --db instacart --collection aisles --file C:\Instacart_JSON\aisles.json
